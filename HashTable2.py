@@ -134,26 +134,45 @@ class HashTable:
             Segment()] + [None] * (DIRECTORY_MAXIMUM_LENGTH - 1)
         self.maxp = MINIMUN_SIZE * 2**self.doubled
         self.keys: list[str] = []
-        self.current_dir = None
-        self.current_seg = None
+        self.current_seg_i: int = 0
+        self.current_bkt_i: int = 0
+        self.current_nodo: Node | None = None 
 
     def __len__(self) -> int:
         return self.length
     
-    # def __iter__(self):
-    #     self.current_seg = self.directory[0]
-    #     self.current_nodeode = self.current_seg[0]
-    #     return self
+    def __iter__(self):
+        self.current_seg_i = 0
+        self.current_bkt_i = 0
+        self.current_seg = self.directory[self.current_seg_i]
+        self.current_nodo = self.current_seg[self.current_bkt_i]
+        return self
 
-    # def __next__(self):
-    #     if self.current_dir is None:
-    #         raise StopIteration
-    #     else:
-    #         no_atual = self.current_nodeode
-    #         if no_atual is None:
-    #             self.current_seg = 
+    def __next__(self):
+        if self.directory[self.current_seg_i] is None or self.current_seg_i > DIRECTORY_MAXIMUM_LENGTH:
+            raise StopIteration
+        else:
+            no_atual: Node | None = self.current_nodo
+            seg_atual: Segment | None = self.directory[self.current_seg_i]
+            while no_atual is None:
+                self.current_bkt_i += 1
+                if self.current_bkt_i > SEGMENTS_MAXIMUM_LENGTH - 1:
+                    self.current_bkt_i = 0
+                    self.current_seg_i += 1
 
-        
+                seg_atual = self.directory[self.current_seg_i]
+                # print(self.current_seg_i)
+                no_atual = seg_atual[self.current_bkt_i]
+
+            self.current_nodo = no_atual.next
+
+            if self.current_bkt_i > SEGMENTS_MAXIMUM_LENGTH - 1:
+                self.current_bkt_i = 0
+                self.current_seg_i += 1
+            else:
+                self.current_bkt_i += 1
+
+        return no_atual.value
 
     @staticmethod
     def str2int(string: str) -> int:
@@ -405,5 +424,18 @@ class HashTable:
         return stats
 
 
-# if __name__ == '__main__':
-#     return 0
+if __name__ == '__main__':
+    from TesteFuncUtils import *
+    a = HashTable()
+    
+    for n in range(100):
+        a.insert(make_rand_str(LENGTH_RAND_STR), n)
+    
+    print(len(a))
+    lista = []
+    for item in a:
+        lista.append(item)
+    
+    lista.sort()
+    print(len(lista))
+    
