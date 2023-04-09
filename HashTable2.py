@@ -112,16 +112,6 @@ class HashTable:
     Voce pode utilizar a estrutura passando chave, valor para a funcao de INSERT 
     e apenas a chave para FIND e REMOVE
 
-    >>> hash_table = HashTable()
-    >>> hash_table.insert("maca", 10)
-    >>> hash_table.find("maca")
-    10
-    >>> hash_table.show()
-    {"maca" -> 10}
-    >>> hash_table.remove("maca")
-    >>> hash_table.find("maca")
-    >>> hash_table.show()
-    {}
     """
 
     def __init__(self) -> None:
@@ -134,6 +124,7 @@ class HashTable:
             Segment()] + [None] * (DIRECTORY_MAXIMUM_LENGTH - 1)
         self.maxp = MINIMUN_SIZE * 2**self.doubled
         self.keys: list[str] = []
+
         self.current_seg_i: int = 0
         self.current_bkt_i: int = 0
         self.current_nodo: Node | None = None 
@@ -144,35 +135,48 @@ class HashTable:
     def __iter__(self):
         self.current_seg_i = 0
         self.current_bkt_i = 0
-        self.current_seg = self.directory[self.current_seg_i]
-        self.current_nodo = self.current_seg[self.current_bkt_i]
+        seg = self.directory[self.current_seg_i]
+        self.current_nodo = seg[self.current_bkt_i]
         return self
 
     def __next__(self):
-        if self.directory[self.current_seg_i] is None or self.current_seg_i > DIRECTORY_MAXIMUM_LENGTH:
+        seg = self.directory[self.current_seg_i]
+        
+        if seg is None or self.current_seg_i > DIRECTORY_MAXIMUM_LENGTH:
             raise StopIteration
         else:
-            no_atual: Node | None = self.current_nodo
-            seg_atual: Segment | None = self.directory[self.current_seg_i]
+            no_atual = self.current_nodo
+            
             while no_atual is None:
                 self.current_bkt_i += 1
                 if self.current_bkt_i > SEGMENTS_MAXIMUM_LENGTH - 1:
                     self.current_bkt_i = 0
                     self.current_seg_i += 1
+                
+                    if self.current_seg_i > DIRECTORY_MAXIMUM_LENGTH - 1:
+                        raise StopIteration
 
-                seg_atual = self.directory[self.current_seg_i]
-                # print(self.current_seg_i)
-                no_atual = seg_atual[self.current_bkt_i]
+                    seg = self.directory[self.current_seg_i]
+
+                    if seg is None:
+                        raise StopIteration
+
+                no_atual = seg[self.current_bkt_i]
 
             self.current_nodo = no_atual.next
+            
+        return (no_atual.key, no_atual.value)
+    
+    def show(self):
+        count = 0
+        print('{', end='')
+        for key, value in self:
+            print(f'{key}: {value}', end='')
+            count += 1
+            if count != self.length:
+                print(',', end=' ')
+        print('}')
 
-            if self.current_bkt_i > SEGMENTS_MAXIMUM_LENGTH - 1:
-                self.current_bkt_i = 0
-                self.current_seg_i += 1
-            else:
-                self.current_bkt_i += 1
-
-        return no_atual.value
 
     @staticmethod
     def str2int(string: str) -> int:
@@ -430,12 +434,8 @@ if __name__ == '__main__':
     
     for n in range(100):
         a.insert(make_rand_str(LENGTH_RAND_STR), n)
+    # a.insert(make_rand_str(LENGTH_RAND_STR), 1)
     
-    print(len(a))
-    lista = []
-    for item in a:
-        lista.append(item)
+    a.show()
     
-    lista.sort()
-    print(len(lista))
-    
+        
