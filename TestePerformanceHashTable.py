@@ -1,44 +1,44 @@
-import unittest
-# from HashTable import * 
-from HashTable2 import * 
+# from HashTable import *
+from HashTable2 import *
 from random import randint, choice
 from config import *
 from TesteFuncUtils import *
+from layout import str_layout
+VALUES = []
+class TestePerfomanceHashTable:
 
-class TestePerfomanceHashTable(unittest.TestCase):
-    
-    def setUp(self) -> None:
+    def __init__(self) -> None:
         self.hash_table = HashTable()
-        for _ in range(AMOUNT_OF_TST_CASES):
-            self.hash_table.insert(make_rand_str(LENGTH_RAND_STR), randint(0, 10))
-        self.keys = self.hash_table.get_keys()
+        self.random_strs = [make_rand_str(LENGTH_RAND_STR)
+                            for _ in range(AMOUNT_OF_TST_CASES)]
 
     @time_it
-    def test_insert_speed(self):
+    def insert(self):
         self.hash_teste = HashTable()
-        for _ in range(AMOUNT_OF_TST_CASES):
-            self.hash_teste.insert(make_rand_str(LENGTH_RAND_STR), randint(0, 10))
+        for n in range(AMOUNT_OF_TST_CASES):
+            self.hash_teste.insert(self.random_strs[n], randint(0, 10))
 
     @time_it
-    def test_find_speed(self):
-        for _ in range(AMOUNT_OF_TST_CASES):
-            self.hash_table.find(choice(self.keys))
+    def find(self):
+        for n in range(AMOUNT_OF_TST_CASES):
+            self.hash_table.find(self.random_strs[n])
 
     @time_it
-    def test_remove_speed(self):
-        for key in self.hash_table.get_keys():
-            self.hash_table.remove(key)             
-    
-    @time_it
-    def test_hash_time(self):
-        for _ in range(AMOUNT_OF_TST_CASES):
-            self.hash_table.address(make_rand_str(LENGTH_RAND_STR))
-    
-    # def test_collision(self):
-    #     stats = self.hash_table.collision_stats()
+    def remove(self):
+        for n in range(AMOUNT_OF_TST_CASES):
+            self.hash_table.remove(self.random_strs[n])
 
-    #     print(stats)  
+    @time_it
+    def hash(self):
+        for n in range(AMOUNT_OF_TST_CASES):
+            self.hash_table.address(self.random_strs[n])
 
 
 if __name__ == '__main__':
-    unittest.main()
+    teste = TestePerfomanceHashTable()
+    teste.__init__()
+    VALUES.append(teste.insert())
+    VALUES.append(teste.find())
+    VALUES.append(teste.remove())
+    VALUES.append(teste.hash())
+    print(str_layout(VALUES))

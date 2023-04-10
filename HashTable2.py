@@ -35,6 +35,7 @@
 # um novo sera alocado e comecaremos a splitar do inicio.
 
 
+
 from typing import Any
 
 # Numpy foi usado apenas para as estatisticas referentes a colisoes 
@@ -72,12 +73,12 @@ class Segment:
     afim de identificar a performance da Hash Table em relacao a colisoes
     """
     def __init__(self) -> None:
-        self.bucket_list = [None] * SEGMENTS_MAXIMUM_LENGTH
+        self.bucket_list: list[Node | None] = [None] * SEGMENTS_MAXIMUM_LENGTH
 
-    def __getitem__(self, i: int):
+    def __getitem__(self, i: int) -> None | Node:
         return self.bucket_list[i]
 
-    def __setitem__(self, i: int, value: Any):
+    def __setitem__(self, i: int, value: Any) -> None:
         self.bucket_list[i] = value
 
     def colisions(self) -> np.ndarray:
@@ -140,6 +141,16 @@ class HashTable:
         return self
 
     def __next__(self):
+        """
+        Itera ate achar um NODO que nao seja VAZIO. A condicao principal de parada
+        é encontrar um diretório vazio.
+
+        Como os valores estao distribuidos de forma aleatorio dentro do segmento eh
+        necessario percorrer ele inteiramente. 
+
+        Quando encontra um NODO que nao eh NONE retorna e seta as variaveis de control
+        de iteracao para o proximo.
+        """
         seg = self.directory[self.current_seg_i]
         
         if seg is None or self.current_seg_i > DIRECTORY_MAXIMUM_LENGTH:
@@ -220,11 +231,11 @@ class HashTable:
         Acha a cabeca do segmento no qual essa key esta alocada e 
         depois itera sobre os elementos do bucket ate achar o elemento
         """
-        current_nodeode: Node = self.find_head(key)
-        while current_nodeode != None:
-            if current_nodeode.key == key:
-                return current_nodeode.value
-            current_nodeode = current_nodeode.next
+        current_node: Node = self.find_head(key)
+        while current_node != None:
+            if current_node.key == key:
+                return current_node.value
+            current_node = current_node.next
 
     def get_keys(self) -> list[str]:
         """
@@ -258,16 +269,16 @@ class HashTable:
         segment: Segment = self.directory[addr //
                                                   SEGMENTS_MAXIMUM_LENGTH]
         segment_i: int = addr % DIRECTORY_MAXIMUM_LENGTH
-        current_nodeode: Node | None = segment[segment_i]
+        current_node: Node | None = segment[segment_i]
 
-        if current_nodeode == None:
+        if current_node == None:
             segment[segment_i] = new_node
         else:
-            while current_nodeode.next != None:
-                current_nodeode = current_nodeode.next
-            current_nodeode.next = new_node
+            while current_node.next != None:
+                current_node = current_node.next
+            current_node.next = new_node
 
-        self.keys.append(key) # Remover aqui se for terminar a implementacao
+        # self.keys.append(key) # Remover aqui se for terminar a implementacao
         self.length += 1
 
     def expand_table(self) -> None:
@@ -364,25 +375,25 @@ class HashTable:
         Nao acredito que seja tao trivial a implementacao dessa funcao, conside_
         rando que a EXPAND_TABLE(), apesar de simples, me custou algumas horas.  
         """
-        current_nodeode: Node = self.find_head(key)
+        current_node: Node = self.find_head(key)
 
-        if current_nodeode is None:
+        if current_node is None:
             return
 
         # Se o primeiro nodo do segmento[i] for o procurado
-        if current_nodeode.key == key:
+        if current_node.key == key:
             addr: int = self.address(key)
             current_segment: Segment = self.directory[addr //
                                                       SEGMENTS_MAXIMUM_LENGTH]
             segment_i: int = addr % DIRECTORY_MAXIMUM_LENGTH
-            current_segment[segment_i] = current_nodeode.next
+            current_segment[segment_i] = current_node.next
         # senao procura ele nos proximos nodos
         else:
-            while current_nodeode.next is not None:
-                if current_nodeode.next.key == key:
-                    current_nodeode.next = current_nodeode.next.next
+            while current_node.next is not None:
+                if current_node.next.key == key:
+                    current_node.next = current_node.next.next
                     break
-                current_nodeode = current_nodeode.next
+                current_node = current_node.next
 
         self.length -= 1
         if self.length / self.maxp < self.lower_bound:
