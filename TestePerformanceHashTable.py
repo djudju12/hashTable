@@ -1,10 +1,22 @@
-from HashTable import *
-# from HashTable2 import *
-from config import *
+# DESCOMENTE a hashtable que voce quer testar. 
+
+from HashTable import * 
+# from HashTableDinamica import *
+
+# Lembre-se que o teste EXPAND deve ser comentado
+# para a hash table estatica
+
+from configTestes import *
 from TesteFuncUtils import *
-from layout import str_layout
+from layoutTestes import str_layout
 VALUES = []
+
 class TestePerfomanceHashTable:
+    """
+    Testes simples de insercao, remocao, procura e hashing.
+    
+    Stats retorna as estatisticas de colisao.
+    """
 
     def __init__(self) -> None:
         self.hash_table: HashTable = None
@@ -19,19 +31,16 @@ class TestePerfomanceHashTable:
 
     def stats(self):
         return self.hash_table.stats()
-    
 
     @time_it
     def find(self):
         for n in range(AMOUNT_OF_TST_CASES):
             self.hash_table.find(self.random_strs[n])
 
-
     @time_it
     def remove(self):
         for n in range(AMOUNT_OF_TST_CASES):
             self.hash_table.remove(self.random_strs[n])
-
 
     @time_it
     def hash(self):
@@ -39,11 +48,10 @@ class TestePerfomanceHashTable:
             self.hash_table.address(self.random_strs[n])
 
 
-
 if __name__ == '__main__':
     teste = TestePerfomanceHashTable()
     VALUES.append(teste.insert())
-    print(teste.stats())
+    print(teste.stats()) # Printe os stats antes de remover os itens da hash table 
     VALUES.append(teste.find())
     VALUES.append(teste.remove())
     VALUES.append(teste.hash())

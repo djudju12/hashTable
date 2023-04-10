@@ -7,8 +7,7 @@
 # 2 - https://citeseerx.ist.psu.edu/doc/10.1.1.14.5908
 # 3 - https://planetmath.org/goodhashtableprimes
 
-# Explicarei como a impletancao funciona, mas para melhor entendimento recomendo
-# acessar a referencia 1
+# Para melhor entendimento recomendo acessar a referencia 1
 #
 # Basicamente temos uma estrutura com duas camadas chamadas DIRECTORY e SEGMENT
 # O directory eh um array de segments e os segments sao arrays de listas linkadas,
@@ -333,7 +332,7 @@ class HashTable:
                 self.maxp = MINIMUN_SIZE * 2**self.doubled
                 self.next_bucket = 0
 
-            # Faz a alocao dos NODES no novo BUCKET
+            # Faz o split do BUCKET 
             current_node: Node = old_segment[old_segment_i] # Nodo que esta sofrendo o REHASH
             new_segment[new_segment_i]: Node | None = None  # Novo segmento que esta  
             previous: Node | None = None                    # current_node anterior 
@@ -400,13 +399,6 @@ class HashTable:
     def shrink_table(self):
         raise NotImplementedError("Shrink_table not implemented")
 
-    def shrink(self) -> None:
-        self.next_bucket -= 1
-        if self.next_bucket < 0:
-            self.doubled -= 1
-            self.maxp = MINIMUN_SIZE * 2**self.doubled
-            self.next_bucket = self.maxp
-
     def stats(self) -> dict:
         """
         Auxiliar para obter as estatisticas de colisoes
@@ -434,7 +426,7 @@ class HashTable:
         stats['max'] = np.max(collisions_list)
         stats['min'] = np.min(collisions_list)
 
-        return stats, collisions_list
+        return stats
 
 
 if __name__ == '__main__':

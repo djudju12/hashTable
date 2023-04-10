@@ -1,10 +1,8 @@
 from typing import Any
 
-
 class Node:
-
     def __init__(self, value) -> None:
-        self.value: tuple = value
+        self.value: Any = value
         self.proximo: Node | None = None 
 
 class ListaEncadeada:
@@ -29,42 +27,6 @@ class ListaEncadeada:
     def __len__(self):
         return self.len
 
-    def __delitem__(self, index: int) -> None:
-        if self.lista_vazia() or index > self.len-1:
-            return print('Index fora dos limites da lista')
-        elif index == 0:
-            self.primeiro = self.primeiro.proximo
-        else:
-            count = 0
-            item = self.primeiro
-            for _ in self:
-                if count == index-1:
-                    item.proximo = item.proximo.proximo
-                    if index == self.len-1:
-                        self.tail = item
-                    break
-                item = item.proximo
-                count += 1
-        self.len -= 1
-
-    def __getitem__(self, index):
-        if self.lista_vazia() or index > self.len:
-            raise IndexError
-        else:
-            count = 0
-            for item in self:
-                if count == index:
-                    return item
-                count += 1
-
-    def mostrar_lista(self) -> None:
-        if self.lista_vazia():
-            print("Lista vazia")
-            return None
-        for item in self:
-            print(item)
-        print("\n")
-
     def lista_vazia(self) -> bool:
         return self.primeiro == None
 
@@ -85,27 +47,21 @@ class ListaEncadeada:
             self.tail = novo
             self.len += 1
 
-    def index(self, index: int) -> Node:
-        if self.lista_vazia() or index > self.len:
-            raise IndexError
-        else:
-            count = 0
-            for item in self:
-                if count == index:
-                    return item
-                count += 1
-
-
     def first_ocurrence(self, value: Any) -> None:
+        """
+        Deleta a primeira ocorrencia de VALUE
+        """
         if self.lista_vazia():
             return print('Index fora dos limites da lista')
         else:
-            count = 0
             item = self.primeiro
             if item.value == value:
                 self.primeiro = self.primeiro.proximo
                 self.len -= 1
                 return True
+            # Mantenho um contador para saber se o item que estou
+            # removendo a TAIL da lista
+            count = 0
             for _ in self:
                 if item.proximo is None:
                     return False

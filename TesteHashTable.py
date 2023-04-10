@@ -1,11 +1,25 @@
+# DESCOMENTE a hashtable que voce quer testar. 
+
+from HashTable import * 
+# from HashTableDinamica import *
+
+# Lembre-se que o teste EXPAND deve ser comentado
+# para a hash table estatica
+
+
 import unittest
-from config import *
-# from HashTable import * 
-from HashTable2 import * 
-from config import *
-from TesteFuncUtils import make_rand_str
+from configTestes import *
+from TesteFuncUtils import make_rand_str # Gera uma string aleatoria como key
 
 class TesteHashTable(unittest.TestCase):
+    """
+    Testes simples de insercao, remocao, procura e tamanho.
+
+    O teste de expansao eh feito apenas para a dinamica: "Asserta" que foi alocado
+    um novo segmento para a hashtable. 
+
+    Rode o arquivo para visualizar os testes.
+    """
     def setUp(self):
         self.hash_table = HashTable()
         self.hash_table.insert("apple", 5)
@@ -41,8 +55,12 @@ class TesteHashTable(unittest.TestCase):
         self.assertEqual(self.hash_table.find("teste123"), 123)
         self.assertEqual(value, 10)
         print("Find OK")
-    
+
     # def test_expand(self):
+    #     """
+    #     Esse teste só pode ser feito na Hash Table dinamica. Comente-o para 
+    #     a estatica
+    #     """
     #     self.assertIsNone(self.hash_table.directory[1])
     #     for _ in range(SEGMENTS_MAXIMUM_LENGTH*(UPPER_BOUND + 1)):
     #         self.hash_table.insert(make_rand_str(LENGTH_RAND_STR), 1)

@@ -1,14 +1,17 @@
+# Desenvolvimento dessas funcoes foram feitas de foram bem simples  
+# e rasteira. A intecao era apenas usar o layout nos teste
+# 
 # .-----------------------------------.
 # |          TESTE_NAME                |
 # |----------------------------------- |
-# |  FUNC  | EXCS | TIME   |   leng    |
+# |  FUNC  | EXCS |   SIZE |   TIME    |
 # |--------|------|--------|-----------|
 # | insert |      |        |           |
 # | remove |      |        |           |
 # | find   |      |        |           |
 # | Hash   |      |        |           |
 # *------------------------------------*
-from config import * 
+from configTestes import * 
 
 def str_horizontal(chars, amount):
     string = chars[0]
