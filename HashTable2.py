@@ -200,9 +200,7 @@ class HashTable:
     def address(self, key: str) -> int:
         """
         Calcula o endereco que sera ou esta alocada a key.
-
-        TODO: melhorar aqui
-        Se o endereco pertencer a um bucket ja splitado, recalcula o endereco
+        Se o endereco pertencer a um bucket ja splitado, recalcula o endereco 
         """
         key = self.str2int(key)
         h: int = key % PRIME
@@ -409,7 +407,7 @@ class HashTable:
             self.maxp = MINIMUN_SIZE * 2**self.doubled
             self.next_bucket = self.maxp
 
-    def collision_stats(self) -> dict:
+    def stats(self) -> dict:
         """
         Auxiliar para obter as estatisticas de colisoes
 
@@ -436,7 +434,7 @@ class HashTable:
         stats['max'] = np.max(collisions_list)
         stats['min'] = np.min(collisions_list)
 
-        return stats
+        return stats, collisions_list
 
 
 if __name__ == '__main__':

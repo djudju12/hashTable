@@ -3,8 +3,11 @@
 
 from typing import Any
 from ListaDinamica import *
+import numpy as np
 
 INITIAL_CAPATY = 500
+PRIME = 104883
+
 class NodeHash:
     def __init__(self, key: str, valor: Any) -> None:
         self.value: Any = valor 
@@ -15,10 +18,10 @@ class NodeHash:
             return (other.value == self.value and other.key == self.key)
         return False
 
-class Nodes: 
-    def __init__(self, node: NodeHash) -> None:
-        self.list: ListaEncadeada = ListaEncadeada()
-        self.list.append(node)
+# class Nodes: 
+#     def __init__(self, node: NodeHash) -> None:
+#         self.list: ListaEncadeada = ListaEncadeada()
+#         self.list.append(node)
 
 
 class HashTable:
@@ -26,76 +29,111 @@ class HashTable:
         self.capacity: int = INITIAL_CAPATY
         self.keys: list[str] = []  
         self.size: int = 0 
-        self.buckets: list[Nodes] = [None] * self.capacity
+        self.buckets: list[ListaEncadeada] = [None] * self.capacity
 
     def __len__(self) -> int:
         return self.size
     
+    def stats(self):
+        arr = np.array([])
+        for bucket in self.buckets:
+            if bucket is not None:
+                arr = np.append(arr, len(bucket))
+        
+        arr = np.sort(arr)
+        stats = {}
+
+        stats['median'] = np.median(arr)
+        stats['average'] = np.mean(arr)
+        stats['max'] = np.max(arr)
+        stats['min'] = np.min(arr)
+        return stats
+    
+
+    @staticmethod
+    def str2int(string: str) -> int:
+        """
+        Funcao auxiliar para converter uma string para inteiro
+        """
+        string = string.encode('ascii')
+        return int.from_bytes(string, byteorder='big')
+
     def address(self, key) -> int:
-        hashsum: int = 0
+        key = self.str2int(key)
+        h: int = key % PRIME
+        addr: int = h % self.capacity
+        return addr
 
-        for idx, c in enumerate(key):
-            hashsum += (idx + len(key)) ** ord(c)
-            hashsum = hashsum % self.capacity 
-        return hashsum
+    # def address(self, key) -> int:
+    #     hashsum: int = 0
 
-    def print_hash(self) -> None:
-        print("{ ", end="")
-        for nodes in self.buckets:
-            if nodes is not None:
-                for node in nodes.list:
-                    print(f"'{node.key}' -> {node.value}", end=" ")
-        print("}", end="")
+    #     for idx, c in enumerate(key):
+    #         hashsum += (idx + len(key)) ** ord(c)
+    #         hashsum = hashsum % self.capacity 
+    #     return hashsum
+
+    # def print_hash(self) -> None:
+    #     print("{ ", end="")
+    #     for nodes in self.buckets:
+    #         if nodes is not None:
+    #             for node in nodes.list:
+    #                 print(f"'{node.key}' -> {node.value}", end=" ")
+    #     print("}", end="")
 
     def insert(self, key, value) -> None:
         self.size += 1 
         index: int = self.address(key)
-        nodes: Nodes = self.buckets[index]
+        # nodes: Nodes = self.buckets[index]
+        nodes: ListaEncadeada = self.buckets[index]
         node: NodeHash = NodeHash(key, value)
         self.keys.append(key)
 
         if nodes is None:
-            self.buckets[index] = Nodes(node)
-            return 
-
-        nodes.list.append(node)
+            new_bucket = ListaEncadeada()
+            new_bucket.append(node)
+            self.buckets[index] = new_bucket
+        else:
+            nodes.append(node)
 
     def find(self, key) -> Any:
         index: int = self.address(key)
-        nodes: Nodes = self.buckets[index]
+        nodes: ListaEncadeada = self.buckets[index]
 
         if nodes is None:
             return None 
         
-        for node in nodes.list:
+        for node in nodes:
             if node.key == key:
                 return node.value  
         
     def remove(self, key) -> None:
         index: int = self.address(key)
-        nodes: Nodes = self.buckets[index]
+        nodes: ListaEncadeada = self.buckets[index]
         
         if nodes is None: 
             return None 
 
-        for node in nodes.list:
+        for node in nodes:
             if node.key == key:
-                nodes.list.first_ocurrence(node)
+                nodes.first_ocurrence(node)
                 self.size -= 1 
-
-    def get_keys(self):
-        unic_keys = []
-        for key in self.keys:
-            if key not in unic_keys:
-                unic_keys.append(key)
-        return unic_keys
-
 
 
 if __name__ == '__main__':
     hash1 = HashTable()
-    hash1.insert("a", 1)
-    hash1.insert("b", 2)
-    hash1.insert("c", 2)
-    print(hash1.get_keys())
+    from TesteFuncUtils import make_rand_str
+    from time import time
+    strs = [make_rand_str(10) for n in range(100000)]
+    ini = time()
+    for n in range(100000):
+        hash1.insert(strs[n], 10)
+
+    # for n in range(1000):
+    #     hash1.find(strs[n])
+    
+    # for n in range(1000):
+    #     hash1.remove(strs[n])
+
+    print( hash1.stats())
+        
 

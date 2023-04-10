@@ -1,6 +1,5 @@
-# from HashTable import *
-from HashTable2 import *
-from random import randint, choice
+from HashTable import *
+# from HashTable2 import *
 from config import *
 from TesteFuncUtils import *
 from layout import str_layout
@@ -8,25 +7,31 @@ VALUES = []
 class TestePerfomanceHashTable:
 
     def __init__(self) -> None:
-        self.hash_table = HashTable()
+        self.hash_table: HashTable = None
         self.random_strs = [make_rand_str(LENGTH_RAND_STR)
                             for _ in range(AMOUNT_OF_TST_CASES)]
 
     @time_it
     def insert(self):
-        self.hash_teste = HashTable()
+        self.hash_table = HashTable()
         for n in range(AMOUNT_OF_TST_CASES):
-            self.hash_teste.insert(self.random_strs[n], randint(0, 10))
+            self.hash_table.insert(self.random_strs[n], 20)
+
+    def stats(self):
+        return self.hash_table.stats()
+    
 
     @time_it
     def find(self):
         for n in range(AMOUNT_OF_TST_CASES):
             self.hash_table.find(self.random_strs[n])
 
+
     @time_it
     def remove(self):
         for n in range(AMOUNT_OF_TST_CASES):
             self.hash_table.remove(self.random_strs[n])
+
 
     @time_it
     def hash(self):
@@ -34,10 +39,11 @@ class TestePerfomanceHashTable:
             self.hash_table.address(self.random_strs[n])
 
 
+
 if __name__ == '__main__':
     teste = TestePerfomanceHashTable()
-    teste.__init__()
     VALUES.append(teste.insert())
+    print(teste.stats())
     VALUES.append(teste.find())
     VALUES.append(teste.remove())
     VALUES.append(teste.hash())

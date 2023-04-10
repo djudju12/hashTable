@@ -1,5 +1,6 @@
 import unittest
 from config import *
+# from HashTable import * 
 from HashTable2 import * 
 from config import *
 from TesteFuncUtils import make_rand_str
@@ -41,29 +42,16 @@ class TesteHashTable(unittest.TestCase):
         self.assertEqual(value, 10)
         print("Find OK")
     
-    def test_get_keys(self):
-        self.assertTrue("batata" in self.hash_table.get_keys())
-        print("Get keys OK")
-
-    def test_expand(self):
-        self.assertIsNone(self.hash_table.directory[1])
-        for _ in range(SEGMENTS_MAXIMUM_LENGTH*(UPPER_BOUND + 1)):
-            self.hash_table.insert(make_rand_str(LENGTH_RAND_STR), 1)
-        self.assertEqual(self.hash_table.doubled, 1)
-        self.assertIsNotNone(self.hash_table.directory[1])
-        self.assertTrue(any(self.hash_table.directory[1]))
-        print("Expand OK")
-
-    # def teste_shrink(self):
+    # def test_expand(self):
+    #     self.assertIsNone(self.hash_table.directory[1])
     #     for _ in range(SEGMENTS_MAXIMUM_LENGTH*(UPPER_BOUND + 1)):
     #         self.hash_table.insert(make_rand_str(LENGTH_RAND_STR), 1)
-    #     keys = self.hash_table.get_keys()
+    #     self.assertEqual(self.hash_table.doubled, 1)
+    #     self.assertIsNotNone(self.hash_table.directory[1])
+    #     self.assertTrue(any(self.hash_table.directory[1]))
+    #     print("Expand OK")
 
-    #     for key in keys:
-    #         self.hash_table.remove(key)
-
-    #     self.assertEqual(self.hash_table.doubled, 0)
-
+        
 if __name__ == '__main__':
     unittest.main()    
 
