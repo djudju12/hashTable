@@ -29,7 +29,6 @@ class TesteHashTable(unittest.TestCase):
     def test_insert(self):
         self.hash_table.insert("dog", 7)
         self.assertEqual(self.hash_table.find("dog"), 7)
-        print("Insert OK")
 
     def test_remove(self):
         self.hash_table.remove("apple")
@@ -38,7 +37,6 @@ class TesteHashTable(unittest.TestCase):
         self.hash_table.insert("teste", 20)
         self.hash_table.remove("teste")
         self.assertIsNone(self.hash_table.find("teste"))
-        print("Delete OK")
 
     def test_resize_len(self):
         len1 = len(self.hash_table)
@@ -47,14 +45,12 @@ class TesteHashTable(unittest.TestCase):
         self.assertEqual(len1+1, len2)
         self.hash_table.remove("papel")
         self.assertEqual(len2-1, len(self.hash_table))
-        print("Resize length OK")
 
     def test_find(self):
         value = self.hash_table.find("batata")
         self.hash_table.insert("teste123", 123)
         self.assertEqual(self.hash_table.find("teste123"), 123)
         self.assertEqual(value, 10)
-        print("Find OK")
 
     # def test_expand(self):
     #     """
@@ -67,7 +63,6 @@ class TesteHashTable(unittest.TestCase):
     #     self.assertEqual(self.hash_table.doubled, 1)
     #     self.assertIsNotNone(self.hash_table.directory[1])
     #     self.assertTrue(any(self.hash_table.directory[1]))
-    #     print("Expand OK")
 
         
 if __name__ == '__main__':
